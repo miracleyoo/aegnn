@@ -2,7 +2,7 @@ import argparse
 import pytorch_lightning as pl
 
 
-class PHyperLogger(pl.callbacks.base.Callback):
+class PHyperLogger(pl.callbacks.Callback):
     """
 
     Args:

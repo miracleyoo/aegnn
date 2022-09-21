@@ -14,7 +14,7 @@ from .flops import compute_flops_conv
 
 
 def __graph_initialization(module, x: torch.Tensor, edge_index: Adj = None, edge_attr=None):
-    pos = module.asy_pos
+    pos = module.asy_pos # Node Position, N(node num) x F(node value feature dim)
     if edge_attr is None:
         if edge_index is None:
             edge_index = compute_edges(module, pos=pos)
@@ -44,10 +44,10 @@ def __graph_initialization(module, x: torch.Tensor, edge_index: Adj = None, edge
 def __graph_processing(module, x: torch.Tensor, edge_index = None, edge_attr: torch.Tensor = None):
     """Asynchronous graph update for graph convolutional layer.
 
-    After the initialization of the graph, only the nodes (and their receptive field) have to updated which either
-    have changed (different features) or have been added. Therefore, for updating the graph we have to first
-    compute the set of "diff" and "new" nodes to then do the convolutional message passing on this subgraph,
-    and add the resulting residuals to the graph.
+    After the initialization of the graph, only the nodes (and their receptive field) which either
+    have changed (different features) or have been added have to be updated. Therefore, for updating
+    the graph we have to first compute the set of "diff" and "new" nodes to then do the convolutional 
+    message passing on this subgraph, and add the resulting residuals to the graph.
 
     :param x: graph nodes features.
     """
@@ -145,8 +145,8 @@ def __check_support(module) -> bool:
     elif isinstance(module, torch_geometric.nn.conv.SplineConv):
         if module.bias is not None:
             raise NotImplementedError("SplineConvs with bias are not yet supported!")
-        if module.root is not None:
-            raise NotImplementedError("SplineConvs with root weight are not yet supported!")
+        # if module.root is not None:
+        #     raise NotImplementedError("SplineConvs with root weight are not yet supported!")
     return True
 
 

@@ -22,15 +22,15 @@ class GraphWen(torch.nn.Module):
         self.block4 = ConvBlock(256, 512, voxel_size=32)
 
         self.pool_final = MaxPoolingX(input_shape[:2] // 2, size=4)
-        self.linear1 = Linear(512 * 4, out_features=512,)
-        self.linear2 = Linear(512, out_features=num_outputs)
+        self.linear1 = Linear(512 * 4, out_features=512, bias=False) # Modified!!!
+        self.linear2 = Linear(512, out_features=num_outputs, bias=False) # Modified!!!
 
     def forward(self, data: torch_geometric.data.Batch) -> torch.Tensor:
         data = self.block1(data)
         data = self.block2(data)
         data = self.block3(data)
         data = self.block4(data)
-
+        print(data.pos[:, :2].shape)
         x = self.pool_final(data.x, pos=data.pos[:, :2], batch=data.batch)
         x = x.view(-1, self.linear1.in_features)
         x = self.linear1(x)

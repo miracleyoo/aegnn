@@ -12,7 +12,7 @@ from wandb.wandb_run import Run as WandBRun
 from aegnn.visualize.utils.histogram import compute_histogram
 
 
-class BBoxLogger(pl.callbacks.base.Callback):
+class BBoxLogger(pl.callbacks.Callback):
 
     def __init__(self, classes: List[str], max_num_images: int = 4, padding: int = 50):
         self.classes = np.array(classes)

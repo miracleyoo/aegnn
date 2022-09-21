@@ -104,5 +104,6 @@ __all__ = [
     "make_conv_asynchronous",
     "make_linear_asynchronous",
     "make_max_pool_asynchronous",
-    "make_model_asynchronous"
+    "make_model_asynchronous",
+    "make_batch_norm_asynchronous"
 ]

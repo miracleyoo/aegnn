@@ -6,7 +6,7 @@ import pytorch_lightning as pl
 from typing import Any, List
 
 
-class FileLogger(pl.callbacks.base.Callback):
+class FileLogger(pl.callbacks.Callback):
     """Logging the code defining the given objects.
     For versioning of model and data processing usually a github commit is used. However, a commit
     uploads all of the files every time, while only tiny bits of code have changed, making it very
