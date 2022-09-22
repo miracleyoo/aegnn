@@ -49,6 +49,9 @@ def __graph_processing(module, x: torch.Tensor, edge_index = None, edge_attr: to
     the graph we have to first compute the set of "diff" and "new" nodes to then do the convolutional 
     message passing on this subgraph, and add the resulting residuals to the graph.
 
+    简单说，这里就是整个paper的核心部件。每次有nodes更新，重新计算时，仅计算更改或新加的nodes。所以这个函数的
+    步骤就是，先算出来哪些nodes和它们的邻域要更改，然后只对这些nodes forward，算出结果后再把残差加回去。
+
     :param x: graph nodes features.
     """
     pos = module.asy_pos
