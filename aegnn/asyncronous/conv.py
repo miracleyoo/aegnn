@@ -62,6 +62,7 @@ def __graph_processing(module, x: torch.Tensor, edge_index = None, edge_attr: to
         pos_new = pos[idx_new, :]
         _, idx_diff = graph_changed_nodes(module, x=x)
         if idx_diff.numel() > 0:
+            # 这里就是计算值变化的node的K步子图的位置
             idx_diff, _, _, _ = k_hop_subgraph(idx_diff, num_hops=1, edge_index=module.asy_graph.edge_index,
                                                num_nodes=module.asy_graph.num_nodes + len(idx_new))
         x_all = x
@@ -75,8 +76,12 @@ def __graph_processing(module, x: torch.Tensor, edge_index = None, edge_attr: to
         pos_all = torch.cat([module.asy_graph.pos, pos_new], dim=0)
 
     logging.debug(f"Subgraph contains {idx_new.numel()} new and {idx_diff.numel()} diff nodes")
+    # 计算所有的新加入node的周围的node，判断标准是在asy_radius内。注意，这里算出来的值
+    # 是包括新node本身的，因为pos_all包含pos_new
     connected_node_mask = torch.cdist(pos_all, pos_new) <= module.asy_radius
     idx_new_neigh = torch.unique(torch.nonzero(connected_node_mask)[:, 0])
+    # idx_update包含了新node及其邻近node，以及值变化的node。注意，对于deep layer来说，
+    # 值变化node是包括其k hop node的，而initial layer的值变node根本就是None。
     idx_update = torch.cat([idx_new_neigh, idx_diff])
     _, edges_connected, _, connected_edges_mask = k_hop_subgraph(idx_update, num_hops=1,
                                                                  edge_index=module.asy_graph.edge_index,
